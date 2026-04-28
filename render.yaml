@@ -11,7 +11,7 @@ services:
     name: civicreach-api
     runtime: python
     pythonVersion: "3.11.9"
-    rootDir: backend
+    rootDir: backend-deploy
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
