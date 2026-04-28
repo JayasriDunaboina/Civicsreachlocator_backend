@@ -4,21 +4,16 @@ from pymongo.collection import Collection
 
 from app.config import settings
 
-
 client: MongoClient | None = None
 _db = None
 
 
 def _encode_mongo_uri(uri: str) -> str:
-    """Auto-encode username and password in MongoDB URI if they contain special chars."""
     try:
         parsed = urlparse(uri)
-        username = parsed.username
-        password = parsed.password
-        if username and password:
-            encoded_user = quote_plus(username)
-            encoded_pass = quote_plus(password)
-            # Rebuild netloc with encoded credentials
+        if parsed.username and parsed.password:
+            encoded_user = quote_plus(parsed.username)
+            encoded_pass = quote_plus(parsed.password)
             host = parsed.hostname
             port = f":{parsed.port}" if parsed.port else ""
             netloc = f"{encoded_user}:{encoded_pass}@{host}{port}"
@@ -40,7 +35,6 @@ def get_db():
 
 
 def _ensure_indexes(db):
-    """Create 2dsphere index for geospatial queries and supporting indexes."""
     providers: Collection = db["providers"]
     providers.create_index([("location", "2dsphere")])
     providers.create_index([("service_type", 1)])
