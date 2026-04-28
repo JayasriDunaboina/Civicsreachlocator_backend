@@ -18,7 +18,13 @@ from app.trust import compute_trust_score, has_trust_badge
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    get_db()
+    try:
+        get_db()
+    except Exception as e:
+        import traceback
+        print("STARTUP FAILED:", e, flush=True)
+        traceback.print_exc()
+        raise
     yield
     close_db()
 
