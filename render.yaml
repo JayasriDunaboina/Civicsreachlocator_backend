@@ -1,0 +1,23 @@
+# Render Blueprint for CivicReach backend
+# https://render.com/docs/blueprint-spec
+#
+# Deploy steps:
+#   1. Push this repo to GitHub.
+#   2. In Render → New → Blueprint → connect your repo.
+#   3. Set the secret env vars (MONGODB_URI) in the Render dashboard.
+
+services:
+  - type: web
+    name: civicreach-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: MONGODB_URI
+        sync: false          # Set manually in Render dashboard (secret)
+      - key: DB_NAME
+        value: civicreach
+      - key: ALLOWED_ORIGIN
+        sync: false          # Set to your Vercel URL, e.g. https://civic-reach.vercel.app
